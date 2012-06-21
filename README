@@ -24,11 +24,43 @@ Config
 
 Edit fullscreenhack.c and change the #defines.
 
-Build and Install
------------------
+Dependencies
+------------
 
-make && sudo make install
+You need 32 bit toolchain if you use 32 bit flash in nspluginwrapper.
+sudo apt-get build-dep nspluginwrapper should give you everything you need.
 
+For native plugins you should just need build-essential and libx11-dev.
 
+For 32-bit Flash in ndiswrapper:
+--------------------------------
 
+Build it:
+
+make 
+
+Test it:
+
+make test
+
+This runs the tester app with and without the patch to verify that it works.
+
+Install it:
+
+sudo make install
+
+And then restart your browser.
+
+For native Flash plugin:
+------------------------
+
+Build it:
+
+If your OS is 64-bit, edit Makefile and change it to BITS=64 on line 1.
+
+Run make and make test as above.
+
+To use it, you have to run your browser as such:
+
+LD_PRELOAD=/path/to/libfullscreenhack.so firefox
 
