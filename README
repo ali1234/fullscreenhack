@@ -1,0 +1,34 @@
+Fullscreen hack for Flash Plugin
+Author: Alistair Buxton <a.j.buxton@gmail.com>
+
+
+Why
+---
+
+Flash plugin incorrectly determines the fullscreen resolution when using nvidia twinview. 
+The result is that fullscreen windows fill the primary monitor, but the video gets scaled as if
+the primary monitor had the resolution of the total display area.
+
+How
+---
+
+The npviewer script loads the hack with LD_PRELOAD and it patches the XGetGeometry call
+which flash uses to determine screen size. If XGetGeometry would return the size of the root
+window, the patch causes it to instead return the size of the primary monitor.
+
+*** NOTE: you must enter the sizes of your root window and primary monitor before compiling ***
+          (i will fix this later)
+
+Config
+------
+
+Edit fullscreenhack.c and change the #defines.
+
+Build and Install
+-----------------
+
+make && sudo make install
+
+
+
+
