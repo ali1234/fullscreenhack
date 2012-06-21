@@ -21,7 +21,7 @@ void __attribute__ ((constructor)) load(void);
 // Called when the library is loaded and before dlopen() returns
 void load(void)
 {
-	printf("fullscreen hack loaded...\n");
+	fprintf(stderr, "fullscreen hack loaded...\n");
 }
 
 Status XGetGeometry(Display *display, Drawable d, Window *root_return, 
