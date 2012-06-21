@@ -1,12 +1,6 @@
 // fullscreenhack.c
 // Alistair Buxton <a.j.buxton@gmail.com>
 
-// options:
-// the real height and width of all your monitors
-// this is what tester should report without the hack
-#define REAL_WIDTH  (3200)
-#define REAL_HEIGHT (1200)
-
 // the height and width of the primary monitor where flash
 // goes fullscreen
 #define FAKE_WIDTH  (1920)
@@ -44,8 +38,10 @@ Status XGetGeometry(Display *display, Drawable d, Window *root_return,
                 width_return, height_return, 
                 border_width_return, depth_return);
 
-    if(*width_return == REAL_WIDTH) *width_return = FAKE_WIDTH;
-    if(*height_return == REAL_HEIGHT) *height_return = FAKE_HEIGHT;
+    if (d == RootWindow(display, DefaultScreen(display))) {
+        *width_return = FAKE_WIDTH;
+        *height_return = FAKE_HEIGHT;
+    }
     return s;
 
 }
