@@ -1,11 +1,6 @@
 // fullscreenhack.c
 // Alistair Buxton <a.j.buxton@gmail.com>
 
-// the height and width of the primary monitor where flash
-// goes fullscreen
-#define FAKE_WIDTH  (1920)
-#define FAKE_HEIGHT (1200)
-
 #include <dlfcn.h>
 #include <stdio.h>
 #include <X11/Xlib.h>
@@ -20,12 +15,49 @@ typedef XineramaScreenInfo * (*xsi_func)(Display*,int*);
 
 typedef int (*xfree_func) (void *);
 
+typedef Bool (*xqp_func) (Display *, Window, Window *,
+              Window *, int *, int *,
+              int *, int *, unsigned int *);
+
+
 void __attribute__ ((constructor)) load(void);
 
 // Called when the library is loaded and before dlopen() returns
 void load(void)
 {
     fprintf(stderr, "fullscreen hack loaded...\n");
+}
+
+int choose_screen(Display *display, XineramaScreenInfo *screens, 
+                    int n_screens, void *xlib_handle)
+{
+    const char *s = getenv("FLASH_FULLSCREEN_DISPLAY");
+    char *e;
+    Window a, b;
+    Window root = RootWindow(display, DefaultScreen(display));
+    int x, y, wx, wy, n;
+    unsigned int mask;
+    Bool result;
+    if (s != NULL) {
+        int w = strtol(s, &e, 0);
+        if (e != NULL && *e == 0 && w >= 0 && w < n_screens)
+            return w;
+	}
+    xqp_func xqp = dlsym(xlib_handle, "XQueryPointer");
+    result = xqp(display, root, &a, &b, &x, &y, &wx, &wy, &mask);
+    fprintf(stderr, "pointer: %dx%d\n", x, y);
+    for(n=0;n<n_screens;n++) {
+        fprintf(stderr, "screen %d, %dx%d+%d+%d\n", n, screens[n].width, 
+                screens[n].height, screens[n].x_org, screens[n].y_org);
+        if (x >= screens[n].x_org && 
+            x < (screens[n].x_org + screens[n].width) &&
+            y >= screens[n].y_org && 
+            y < (screens[n].y_org + screens[n].height)) {
+            fprintf(stderr, "match found\n");
+            return n;
+        }
+    }
+    return 0;
 }
 
 Status XGetGeometry(Display *display, Drawable d, Window *root_return, 
@@ -53,11 +85,10 @@ Status XGetGeometry(Display *display, Drawable d, Window *root_return,
         xsi_func qs = dlsym(xin_handle, "XineramaQueryScreens");
         screens = qs(display, &n_screens);
 
-        for(n=0;n<n_screens;n++)
-            fprintf(stderr, "screen %d, %dx%d+%d+%d\n", n, screens[n].width, screens[n].height, screens[n].x_org, screens[n].y_org);
+        n = choose_screen(display, screens, n_screens, xlib_handle);
 
-        *width_return = FAKE_WIDTH;
-        *height_return = FAKE_HEIGHT;
+        *width_return = screens[n].width;
+        *height_return = screens[n].height;
 
         XFree(screens);
     }
