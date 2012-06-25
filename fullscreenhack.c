@@ -25,7 +25,6 @@ void __attribute__ ((constructor)) load(void);
 // Called when the library is loaded and before dlopen() returns
 void load(void)
 {
-    fprintf(stderr, "fullscreen hack loaded...\n");
 }
 
 int choose_screen(Display *display, XineramaScreenInfo *screens, 
