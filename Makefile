@@ -20,9 +20,9 @@ clean:
 
 simpleinstall:
 ifeq ($(BITS),64)
-        cp libfullscreenhack.so /usr/lib64/libfullscreenhack.so
+	cp libfullscreenhack.so /usr/lib64/libfullscreenhack.so
 else
-        cp libfullscreenhack.so /usr/lib/libfullscreenhack.so
+	cp libfullscreenhack.so /usr/lib/libfullscreenhack.so
 endif
 
 
