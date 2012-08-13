@@ -1,4 +1,4 @@
-BITS=32
+BITS=64
 
 all: tester libfullscreenhack.so
 
@@ -18,6 +18,15 @@ test: all
 clean:
 	rm -f *.o *.so tester
 
-install:
-	cp libfullscreenhack.so /usr/lib/nspluginwrapper/i386/linux/
-	cp npviewer /usr/lib/nspluginwrapper/noarch/
+firefox:
+ifeq ($(wildcard /usr/bin/firefox.main),) 
+	cp /usr/bin/firefox /usr/bin/firefox.main
+endif
+ifeq ($(BITS),64)
+	cp libfullscreenhack.so /usr/lib64/libfullscreenhack.so
+	echo "export LD_PRELOAD=/usr/lib64/libfullscreenhack.so" > /usr/bin/firefox
+else
+	cp libfullscreenhack.so /usr/lib/libfullscreenhack.so
+	echo "export LD_PRELOAD=/usr/lib/libfullscreenhack.so" > /usr/bin/firefox
+endif
+	echo "firefox.main" >> /usr/bin/firefox

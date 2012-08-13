@@ -89,6 +89,8 @@ Status XGetGeometry(Display *display, Drawable d, Window *root_return,
 
         *width_return = screens[n].width;
         *height_return = screens[n].height;
+	fprintf(stderr, "Using: %dx%d+%d+%d\n", n, screens[n].width, // output selected resolution to stderr
+                screens[n].height, screens[n].x_org, screens[n].y_org);
 
         XFree(screens);
     }
