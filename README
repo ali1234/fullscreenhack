@@ -107,6 +107,12 @@ or to '/usr/lib64/libfullscreenhack.so'
 If you used 'sudo make simpleinstall' be sure to set
 LD_PRELOAD="/usr/lib/libfullscreenhack.so"
 (if BITS=32)
-LD_PRELOAD="/usr/lib/libfullscreenhack.so"
+LD_PRELOAD="/usr/lib64/libfullscreenhack.so"
+(if BITS=64)
+while you load the browser.
+Example:
+LD_PRELOAD="/usr/lib/libfullscreenhack.so" firefox
+(if BITS=32)
+LD_PRELOAD="/usr/lib64/libfullscreenhack.so" firefox
 (if BITS=64)
 
