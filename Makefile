@@ -18,6 +18,9 @@ test: all
 clean:
 	rm -f *.o *.so tester
 
+install:
+	@echo "'install' is not a valid option. Read the README file!"
+
 simpleinstall:
 ifeq ($(BITS),64)
 	cp libfullscreenhack.so /usr/lib64/libfullscreenhack.so
