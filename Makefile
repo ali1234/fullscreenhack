@@ -18,6 +18,14 @@ test: all
 clean:
 	rm -f *.o *.so tester
 
+simpleinstall:
+ifeq ($(BITS),64)
+        cp libfullscreenhack.so /usr/lib64/libfullscreenhack.so
+else
+        cp libfullscreenhack.so /usr/lib/libfullscreenhack.so
+endif
+
+
 firefox:
 ifeq ($(wildcard /usr/bin/firefox.main),) 
 	cp /usr/bin/firefox /usr/bin/firefox.main
