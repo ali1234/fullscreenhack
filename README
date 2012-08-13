@@ -73,6 +73,8 @@ Firefox:
 +---------+
 
 To install run 'sudo make firefox'
+you can also just use 'sudo make simpleinstall' to manually install
+see 'Other-browsers'
 
 +-------------+
 |Not Important|
@@ -84,7 +86,27 @@ After a successful install:
 and /usr/bin/firefox contains code to preload the hack while running /usr/bin/firefox.main
 This part is not important to most end-users
 
-Otherbrowsers:
+Other-browsers:
 
-// Todo
++---------+
+|Important|
++---------+
+
+To install run 'sudo make simpleinstall'
+
+This will install libfullscreenhack.so
+to '/usr/lib/libfullscreenhack.so'
+(if BITS=32)
+or to '/usr/lib64/libfullscreenhack.so'
+(if BITS=64)
+
++--------------+
+|Very Important|
++--------------+
+
+If you used 'sudo make simpleinstall' be sure to set
+LD_PRELOAD="/usr/lib/libfullscreenhack.so"
+(if BITS=32)
+LD_PRELOAD="/usr/lib/libfullscreenhack.so"
+(if BITS=64)
 
