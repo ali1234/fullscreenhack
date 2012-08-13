@@ -53,6 +53,11 @@ For native Flash plugin:
 ------------------------
 
 Build it:
+---------
+
++---------+
+|Important|
++---------+
 
 If your OS is 64-bit, edit Makefile; line 1 should be BITS=64
 If your OS is 32-bit, edit Makefile; line 1 should be BITS=32
@@ -61,8 +66,23 @@ Run 'make' to compile
 Run 'make test' to test the compiled binary.
 
 Firefox:
+--------
+
++---------+
+|Important|
++---------+
 
 To install run 'sudo make firefox'
+
++-------------+
+|Not Important|
++-------------+
+
+After a successful install:
+
+/usr/bin/firefox is moved to /usr/bin/firefox.main if it hasn't been moved already
+and /usr/bin/firefox contains code to preload the hack while running /usr/bin/firefox.main
+This part is not important to most end-users
 
 Otherbrowsers:
 
