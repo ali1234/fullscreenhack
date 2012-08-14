@@ -40,4 +40,4 @@ else
 	cp libfullscreenhack.so /usr/lib/libfullscreenhack.so
 	echo "export LD_PRELOAD=/usr/lib/libfullscreenhack.so" > /usr/bin/firefox
 endif
-	echo "firefox.main" >> /usr/bin/firefox
+	echo 'firefox.main "$$@"' >> /usr/bin/firefox
