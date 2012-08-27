@@ -30,8 +30,12 @@ endif
 
 
 firefox:
-ifeq ($(wildcard /usr/bin/firefox.main),) 
+ifeq ($(wildcard /usr/bin/firefox.main),)
 	cp /usr/bin/firefox /usr/bin/firefox.main
+else
+ifneq ($(shell tail -n 1 /usr/bin/firefox | grep -o firefox.main),firefox.main)
+	cp -f /usr/bin/firefox /usr/bin/firefox.main
+endif
 endif
 ifeq ($(BITS),64)
 	cp libfullscreenhack.so /usr/lib64/libfullscreenhack.so
@@ -41,3 +45,4 @@ else
 	echo "export LD_PRELOAD=/usr/lib/libfullscreenhack.so" > /usr/bin/firefox
 endif
 	echo 'firefox.main "$$@"' >> /usr/bin/firefox
+	chmod a+x /usr/bin/firefox
