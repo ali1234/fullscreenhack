@@ -3,6 +3,7 @@
 
 #include <dlfcn.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <X11/Xlib.h>
 #include <X11/extensions/Xinerama.h>
 
@@ -37,26 +38,26 @@ int choose_screen(Display *display, XineramaScreenInfo *screens,
     Window root = RootWindow(display, DefaultScreen(display));
     int x, y, wx, wy, n;
     unsigned int mask;
-    Bool result;
     if (s != NULL) {
         int w = strtol(s, &e, 0);
         if (e != NULL && *e == 0 && w >= 0 && w < n_screens)
             return w;
 	}
     xqp_func xqp = dlsym(xlib_handle, "XQueryPointer");
-    result = xqp(display, root, &a, &b, &x, &y, &wx, &wy, &mask);
-    fprintf(stderr, "pointer: %dx%d\n", x, y);
+    xqp(display, root, &a, &b, &x, &y, &wx, &wy, &mask);
+    fprintf(stderr, "\nCursor location: %dx%d\n", x, y);
     for(n=0;n<n_screens;n++) {
-        fprintf(stderr, "screen %d, %dx%d+%d+%d\n", n, screens[n].width, 
+        fprintf(stderr, "\nscreen[%d]: %dx%d+%d+%d\n", n, screens[n].width, 
                 screens[n].height, screens[n].x_org, screens[n].y_org);
         if (x >= screens[n].x_org && 
             x < (screens[n].x_org + screens[n].width) &&
             y >= screens[n].y_org && 
             y < (screens[n].y_org + screens[n].height)) {
-            fprintf(stderr, "match found\n");
+            //fprintf(stderr, "match found\n"); // unnecessary with 'Using: ' below
             return n;
         }
     }
+    fprintf(stderr, "\n----\nNo matching screen found!\n----\n\n");
     return 0;
 }
 
@@ -89,6 +90,8 @@ Status XGetGeometry(Display *display, Drawable d, Window *root_return,
 
         *width_return = screens[n].width;
         *height_return = screens[n].height;
+	fprintf(stderr, "\nUsing: screen[%d] %dx%d+%d+%d\n\n", n, screens[n].width, // output selected resolution to stderr
+                screens[n].height, screens[n].x_org, screens[n].y_org);
 
         XFree(screens);
     }
