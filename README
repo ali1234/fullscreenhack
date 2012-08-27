@@ -1,5 +1,6 @@
 Fullscreen hack for Flash Plugin
 Author: Alistair Buxton <a.j.buxton@gmail.com>
+Edited By: Timothy Zorn <timothy.zorn@zornco.net>
 
 
 Why
@@ -24,45 +25,94 @@ The monitor sizes sent are now based on Xinerama.
 Config
 ------
 
-Edit fullscreenhack.c and change the #defines.
+see the 'Build it' section
 
 Dependencies
 ------------
 
-You need 32 bit toolchain if you use 32 bit flash in nspluginwrapper.
-sudo apt-get build-dep nspluginwrapper should give you everything you need.
+for 'yum' (Fedora and RHEL Distros)
 
-For native plugins you should just need build-essential and libx11-dev.
+gcc (or similar C compiler)
+make
+glibc-devel
+libX11-devel
+libXrandr-devel
+libXinerama-devel
 
-For 32-bit Flash in ndiswrapper:
---------------------------------
+for 'apt-get'
 
-Build it:
-
-make 
-
-Test it:
-
-make test
-
-This runs the tester app with and without the patch to verify that it works.
-
-Install it:
-
-sudo make install
-
-And then restart your browser.
+I believe it would be
+gcc
+make
+glibc-dev
+libX11-dev
+libXrandr-dev
+libXinerama-dev
 
 For native Flash plugin:
 ------------------------
 
 Build it:
+---------
 
-If your OS is 64-bit, edit Makefile and change it to BITS=64 on line 1.
++---------+
+|Important|
++---------+
 
-Run make and make test as above.
+If your OS is 64-bit, edit Makefile; line 1 should be BITS=64
+If your OS is 32-bit, edit Makefile; line 1 should be BITS=32
 
-To use it, you have to run your browser as such:
+Run 'make' to compile
+Run 'make test' to test the compiled binary.
 
-LD_PRELOAD=/path/to/libfullscreenhack.so firefox
+Firefox:
+--------
+
++---------+
+|Important|
++---------+
+
+To install run 'sudo make firefox'
+you can also just use 'sudo make simpleinstall' to manually install
+see 'Other-browsers'
+
++-------------+
+|Not Important|
++-------------+
+
+After a successful install:
+
+/usr/bin/firefox is moved to /usr/bin/firefox.main if it hasn't been moved already
+and /usr/bin/firefox contains code to preload the hack while running /usr/bin/firefox.main
+This part is not important to most end-users
+
+Other-browsers:
+
++---------+
+|Important|
++---------+
+
+To install run 'sudo make simpleinstall'
+
+This will install libfullscreenhack.so
+to '/usr/lib/libfullscreenhack.so'
+(if BITS=32)
+or to '/usr/lib64/libfullscreenhack.so'
+(if BITS=64)
+
++--------------+
+|Very Important|
++--------------+
+
+If you used 'sudo make simpleinstall' be sure to set
+LD_PRELOAD="/usr/lib/libfullscreenhack.so"
+(if BITS=32)
+LD_PRELOAD="/usr/lib64/libfullscreenhack.so"
+(if BITS=64)
+while you load the browser.
+Example:
+LD_PRELOAD="/usr/lib/libfullscreenhack.so" firefox
+(if BITS=32)
+LD_PRELOAD="/usr/lib64/libfullscreenhack.so" firefox
+(if BITS=64)
 
