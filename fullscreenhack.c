@@ -3,6 +3,7 @@
 
 #include <dlfcn.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <X11/Xlib.h>
 #include <X11/extensions/Xinerama.h>
 
@@ -37,14 +38,13 @@ int choose_screen(Display *display, XineramaScreenInfo *screens,
     Window root = RootWindow(display, DefaultScreen(display));
     int x, y, wx, wy, n;
     unsigned int mask;
-    Bool result;
     if (s != NULL) {
         int w = strtol(s, &e, 0);
         if (e != NULL && *e == 0 && w >= 0 && w < n_screens)
             return w;
 	}
     xqp_func xqp = dlsym(xlib_handle, "XQueryPointer");
-    result = xqp(display, root, &a, &b, &x, &y, &wx, &wy, &mask);
+    xqp(display, root, &a, &b, &x, &y, &wx, &wy, &mask);
     fprintf(stderr, "\nCursor location: %dx%d\n", x, y);
     for(n=0;n<n_screens;n++) {
         fprintf(stderr, "\nscreen[%d]: %dx%d+%d+%d\n", n, screens[n].width, 
