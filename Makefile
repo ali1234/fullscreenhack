@@ -1,4 +1,4 @@
-BITS=32
+BITS=64
 
 all: tester libfullscreenhack.so
 
@@ -14,6 +14,9 @@ test: all
 	./tester
 	echo running with the hack...
 	LD_PRELOAD=./libfullscreenhack.so ./tester
+
+fftest: all
+	LD_PRELOAD=`pwd`/libfullscreenhack.so firefox 'http://www.youtube.com'
 
 clean:
 	rm -f *.o *.so tester
