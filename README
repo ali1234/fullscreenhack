@@ -8,7 +8,9 @@ Why
 Flash plugin incorrectly determines the fullscreen resolution when 
 using nvidia twinview. The result is that fullscreen windows fill 
 the primary monitor, but the video gets scaled as if the primary 
-monitor had the resolution of the total display area.
+monitor had the resolution of the total display area. Even worse,
+Flash has a nasty habit of dropping out of fullscreen mode when
+you try to do anything on the other monitor.
 
 How
 ---
@@ -19,6 +21,10 @@ If XGetGeometry would return the size of the root window, the patch
 causes it to instead return the size of a single monitor.
 
 The monitor sizes sent are now based on Xinerama.
+
+Fullscreen mode is no longer dropped when Flash loses focus by
+simply masking out PropertyChange X events, stopping the
+behaviour entirely.
 
 
 Config
@@ -46,6 +52,10 @@ Test it:
 make test
 
 This runs the tester app with and without the patch to verify that it works.
+
+make fftest
+
+This runs Firefox with the patch enabled so Flash can be tested directly.
 
 Install it:
 
