@@ -21,3 +21,4 @@ clean:
 install:
 	cp libfullscreenhack.so /usr/lib/nspluginwrapper/i386/linux/
 	cp npviewer /usr/lib/nspluginwrapper/noarch/
+	python chrome-flash-switch.py
