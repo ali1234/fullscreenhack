@@ -34,6 +34,11 @@ sudo apt-get build-dep nspluginwrapper should give you everything you need.
 
 For native plugins you should just need build-essential and libx11-dev.
 
+Sidenote: If you're running google-chrome, sudo make install will attempt to 
+make chrome use the external flash player plugin rather than the built in 
+PepperFlash.
+
+
 For 32-bit Flash in ndiswrapper:
 --------------------------------
 
@@ -51,7 +56,7 @@ Install it:
 
 sudo make install
 
-And then restart your browser.
+And then restart your browser. 
 
 For native Flash plugin:
 ------------------------
