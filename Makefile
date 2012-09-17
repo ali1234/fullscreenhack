@@ -1,6 +1,6 @@
-BITS=32
+BITS=64
 
-all: tester libfullscreenhack.so
+all: tester libfullscreenhack.so libfullscreenhackppapi.so
 
 tester: tester.c
 	gcc -m$(BITS) -o tester tester.c -lX11 -lXrandr
@@ -8,6 +8,10 @@ tester: tester.c
 libfullscreenhack.so: fullscreenhack.c
 	gcc -m$(BITS) -fPIC -c -Wall fullscreenhack.c -o fullscreenhack.o
 	gcc -m$(BITS) -shared fullscreenhack.o -ldl -o libfullscreenhack.so
+
+libfullscreenhackppapi.so: fullscreenhackppapi.c
+	gcc -m$(BITS) -fPIC -c -Wall fullscreenhackppapi.c -o fullscreenhackppapi.o
+	gcc -m$(BITS) -shared fullscreenhackppapi.o -ldl -o libfullscreenhackppapi.so
 
 test: all
 	echo running without the hack...
@@ -17,7 +21,3 @@ test: all
 
 clean:
 	rm -f *.o *.so tester
-
-install:
-	cp libfullscreenhack.so /usr/lib/nspluginwrapper/i386/linux/
-	cp npviewer /usr/lib/nspluginwrapper/noarch/
