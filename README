@@ -13,13 +13,24 @@ monitor had the resolution of the total display area.
 How
 ---
 
-The npviewer script loads the hack with LD_PRELOAD and it patches 
-the XGetGeometry call which flash uses to determine screen size. 
-If XGetGeometry would return the size of the root window, the patch 
-causes it to instead return the size of a single monitor.
+There are two hacks. One for NPAPI Flash (Firefox etc) and one for 
+PPAPI Flash (Google Chrome).
 
-The monitor sizes sent are now based on Xinerama.
+The NPAPI hack patches the XGetGeometry call which flash uses to 
+determine screen size. If XGetGeometry would return the size of the 
+root window, the patch causes it to instead return the size of a 
+single monitor, selected based on mouse position. With NPAPI the
+Flash fullscreen window opens on the monitor where the Flash plugin
+was first opened, and mouse position is a good approximation as long
+as you don't frag the window to another monitor. If you do, just 
+reload the page.
 
+The PPAPI hack works differently. This API has it's own fullscreen
+functions which are just as broken as Flash. But these use X11 macros
+which cannot be patched. So instead I patch the Display struct returned
+by XOpenDisplay. Under PPAPI the Flash fullscreen window always opens
+on the primary monitor as far as I can tell, so I always insert the 
+dimensions of screen 0.
 
 Config
 ------
@@ -29,40 +40,19 @@ Edit fullscreenhack.c and change the #defines.
 Dependencies
 ------------
 
-You need 32 bit toolchain if you use 32 bit flash in nspluginwrapper.
-sudo apt-get build-dep nspluginwrapper should give you everything you need.
+build-essential, libx11-dev, and libxinerama-dev.
 
-For native plugins you should just need build-essential and libx11-dev.
-
-For 32-bit Flash in ndiswrapper:
---------------------------------
-
-Build it:
+Build
+-----
 
 make 
 
-Test it:
+Usage
+-----
 
-make test
+env LD_PRELOAD=/path/to/libfullscreenhack.so firefox %u
+env LD_PRELOAD=/path/to/libfullscreenhackppapi.so google-chrome %u
 
-This runs the tester app with and without the patch to verify that it works.
+You can put these lines into custom .desktop files and then add those to your menus.
 
-Install it:
-
-sudo make install
-
-And then restart your browser.
-
-For native Flash plugin:
-------------------------
-
-Build it:
-
-If your OS is 64-bit, edit Makefile and change it to BITS=64 on line 1.
-
-Run make and make test as above.
-
-To use it, you have to run your browser as such:
-
-LD_PRELOAD=/path/to/libfullscreenhack.so firefox
 
