@@ -40,7 +40,7 @@ Edit fullscreenhack.c and change the #defines.
 Dependencies
 ------------
 
-build-essential, libx11-dev, and libxinerama-dev.
+sudo apt-get install build-essential libx11-dev libxinerama-dev libxrandr-dev
 
 Build
 -----
