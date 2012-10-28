@@ -5,9 +5,16 @@
 
 // "running_under_flash" detection code from libvdpau "smurf bug" workaround.
 
-static int _running_under_flash;
+#include <dlfcn.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <X11/Xlib.h>
+#include <X11/extensions/Xinerama.h>
 
-static void init_running_under_flash(void)
+int _running_under_flash = 0;
+
+void fshack_init_running_under_flash(void)
 {
  FILE *fp;
  char buffer[1024];
@@ -28,11 +35,11 @@ static void init_running_under_flash(void)
  */
  for (i = 0; i < ret; i++) {
  if (buffer[i] == '\0') {
- buffer[i] = 'x';
+ buffer[i] = ' ';
  }
  }
  buffer[ret] = '\0';
-
+ fprintf(stderr, "--- %s ---\n", buffer);
  if (strstr(buffer, "libflashplayer") != NULL) {
  _running_under_flash = 1;
  }
@@ -40,6 +47,8 @@ static void init_running_under_flash(void)
 
 // event mask filter prevents flash exiting fullscreen on focus switch.
 // by Steve Purchase <steve@t220.com>
+
+typedef int (*xselectinput_func)(Display*, Window, long);
 
 int XSelectInput(Display* display, Window window, long event_mask)
 {

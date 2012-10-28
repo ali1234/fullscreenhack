@@ -7,6 +7,8 @@
 #include <X11/Xlib.h>
 #include <X11/extensions/Xinerama.h>
 
+#include "common.h"
+
 typedef Status (*xgg_func)(Display *, Drawable, Window *, 
 				int *, int *, unsigned int *, 
 				unsigned int *, unsigned int *, 
@@ -26,7 +28,8 @@ void __attribute__ ((constructor)) load(void);
 // Called when the library is loaded and before dlopen() returns
 void load(void)
 {
-    fprintf(stderr, "fullscreen hack loaded...\n");
+    fshack_init_running_under_flash();
+    fprintf(stderr, "fullscreen hack loaded... running under flash = %d\n", _running_under_flash);
 }
 
 int choose_screen(Display *display, XineramaScreenInfo *screens, 
@@ -77,7 +80,7 @@ Status XGetGeometry(Display *display, Drawable d, Window *root_return,
                 width_return, height_return, 
                 border_width_return, depth_return);
 
-    if (d == RootWindow(display, DefaultScreen(display))) {
+    if (_running_under_flash && d == RootWindow(display, DefaultScreen(display))) {
         xfree_func XFree = dlsym(xlib_handle, "XFree");
         void *xin_handle;
         XineramaScreenInfo *screens;

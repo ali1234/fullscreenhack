@@ -9,6 +9,8 @@
 #include <X11/Xlib.h>
 #include <X11/extensions/Xinerama.h>
 
+#include "common.h"
+
 typedef Status (*xgg_func)(Display *, Drawable, Window *, 
 				int *, int *, unsigned int *, 
 				unsigned int *, unsigned int *, 
@@ -30,7 +32,9 @@ void __attribute__ ((constructor)) load(void);
 // Called when the library is loaded and before dlopen() returns
 void load(void)
 {
-    fprintf(stderr, "fullscreen hack loaded...\n");
+    // FIXME: fshack_init_running_under_flash();
+    _running_under_flash = 1;
+    fprintf(stderr, "fullscreen hack loaded... running under flash = %d\n", _running_under_flash);
 }
 
 Display *XOpenDisplay(_Xconst char *display_name) {
@@ -45,12 +49,13 @@ Display *XOpenDisplay(_Xconst char *display_name) {
     xsi_func qs = dlsym(xin_handle, "XineramaQueryScreens");
     screens = qs(d, &n_screens);
 
-    d->screens[0].width=screens[0].width;
-    d->screens[0].height=screens[0].height;
-    XFree(screens);
+    if(_running_under_flash) {
+        d->screens[0].width=screens[0].width;
+        d->screens[0].height=screens[0].height;
+        XFree(screens);
 
-    fprintf(stderr, "patched XOpenDisplay: %dx%d\n", d->screens[0].width, d->screens[0].height);
-
+        fprintf(stderr, "patched XOpenDisplay: %dx%d\n", d->screens[0].width, d->screens[0].height);
+    }
     return d;
 }
 
