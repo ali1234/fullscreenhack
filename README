@@ -8,7 +8,9 @@ Why
 Flash plugin incorrectly determines the fullscreen resolution when 
 using nvidia twinview. The result is that fullscreen windows fill 
 the primary monitor, but the video gets scaled as if the primary 
-monitor had the resolution of the total display area.
+monitor had the resolution of the total display area. Flash also
+drops out of fullscreen mode when you try to do anything on the
+other monitor.
 
 How
 ---
@@ -32,10 +34,14 @@ by XOpenDisplay. Under PPAPI the Flash fullscreen window always opens
 on the primary monitor as far as I can tell, so I always insert the 
 dimensions of screen 0.
 
+Fullscreen mode is no longer dropped when Flash loses focus by 
+simply masking out the PropertyChange X events, stopping the 
+behaviour entirely.
+
 Config
 ------
 
-Edit fullscreenhack.c and change the #defines.
+None. (It works by Xinerama.)
 
 Dependencies
 ------------
