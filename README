@@ -50,8 +50,8 @@ make
 Usage
 -----
 
-env LD_PRELOAD=/path/to/libfullscreenhack.so firefox %u
-env LD_PRELOAD=/path/to/libfullscreenhackppapi.so google-chrome %u
+env LD_PRELOAD=/path/to/libfshack-npapi.so firefox %u
+env LD_PRELOAD=/path/to/libfshack-ppapi.so google-chrome %u
 
 You can put these lines into custom .desktop files and then add those to your menus.
 
