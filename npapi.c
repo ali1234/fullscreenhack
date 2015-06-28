@@ -6,7 +6,7 @@
 #include <stdlib.h>
 #include <X11/Xlib.h>
 #include <X11/extensions/Xinerama.h>
-
+#include <gdk/gdk.h>
 #include "common.h"
 
 typedef Status (*xgg_func)(Display *, Drawable, Window *, 
@@ -22,6 +22,11 @@ typedef Bool (*xqp_func) (Display *, Window, Window *,
               Window *, int *, int *,
               int *, int *, unsigned int *);
 
+typedef void (*gsgmg_func) (GdkScreen *,  gint ,  GdkRectangle *);
+
+typedef gint (*gsgmatw_func) (GdkScreen *, GdkWindow* );
+
+typedef GdkWindow* (*gsgaw_func) (GdkScreen *);
 
 void __attribute__ ((constructor)) load(void);
 
@@ -63,6 +68,32 @@ int choose_screen(Display *display, XineramaScreenInfo *screens,
     fprintf(stderr, "\n----\nNo matching screen found!\n----\n\n");
     return 0;
 }
+void gdk_screen_get_monitor_geometry (GdkScreen *screen,
+                                 gint monitor_num,
+                                 GdkRectangle *dest)
+{
+    void* gdk_handle;
+
+    gdk_handle = dlopen("libgdk-x11-2.0.so.0", RTLD_LAZY);
+    gsgmg_func gsgmg = dlsym(gdk_handle, "gdk_screen_get_monitor_geometry");
+
+    if (_running_under_flash) {
+     GdkWindow *window;
+     gsgaw_func gsgaw = dlsym(gdk_handle, "gdk_screen_get_active_window");
+     window = gsgaw(screen);
+     gsgmatw_func gsgmatw = dlsym(gdk_handle, "gdk_screen_get_monitor_at_window");
+
+      //dest->width = 2560;
+      //dest->height = 1440;
+
+     monitor_num = gsgmatw(screen, window);
+   }
+
+   gsgmg(screen, monitor_num, dest);
+
+   printf("monitor %u size - %ux%u\n",monitor_num, dest->width, dest->height);
+   dlclose(gdk_handle);
+}
 
 Status XGetGeometry(Display *display, Drawable d, Window *root_return, 
             int *x_return, int *y_return, 
@@ -94,10 +125,12 @@ Status XGetGeometry(Display *display, Drawable d, Window *root_return,
         *width_return = screens[n].width;
         *height_return = screens[n].height;
 	fprintf(stderr, "\nUsing: screen[%d] %dx%d+%d+%d\n\n", n, screens[n].width, // output selected resolution to stderr
-                screens[n].height, screens[n].x_org, screens[n].y_org);
+               screens[n].height, screens[n].x_org, screens[n].y_org);
 
         XFree(screens);
+        //dlclose(xin_handle); // this is making  firefox to crash, why?...
     }
+    dlclose(xlib_handle);
     return s;
 
 }

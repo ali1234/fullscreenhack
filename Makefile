@@ -1,7 +1,9 @@
+GDK_CFLAGS=`pkg-config --cflags gdk-x11-2.0`
+
 all: libfshack-npapi.so libfshack-ppapi.so
 
 %.o: %.c common.h
-	gcc -fPIC -c -Wall $*.c -o $*.o
+	gcc -fPIC $(GDK_CFLAGS) -c -Wall $*.c -o $*.o
 
 libfshack-npapi.so: npapi.o common.o
 	gcc -shared npapi.o common.o -ldl -o libfshack-npapi.so
