@@ -73,11 +73,13 @@ void gdk_screen_get_monitor_geometry (GdkScreen *screen,
                                  GdkRectangle *dest)
 {
     void* gdk_handle;
+	gsgmg_func gsgmg;
 
+   	if (_running_under_flash) {
     gdk_handle = dlopen("libgdk-x11-2.0.so.0", RTLD_LAZY);
-    gsgmg_func gsgmg = dlsym(gdk_handle, "gdk_screen_get_monitor_geometry");
+    gsgmg = dlsym(gdk_handle, "gdk_screen_get_monitor_geometry");
 
-    if (_running_under_flash) {
+    
      GdkWindow *window;
      gsgaw_func gsgaw = dlsym(gdk_handle, "gdk_screen_get_active_window");
      window = gsgaw(screen);
@@ -87,7 +89,11 @@ void gdk_screen_get_monitor_geometry (GdkScreen *screen,
       //dest->height = 1440;
 
      monitor_num = gsgmatw(screen, window);
-   }
+   	}
+   	else {
+	gdk_handle = dlopen("libgdk-3.so.0", RTLD_LAZY);
+    gsgmg = dlsym(gdk_handle, "gdk_screen_get_monitor_geometry");
+   	}
 
    gsgmg(screen, monitor_num, dest);
 
