@@ -21,7 +21,8 @@ void fshack_init_running_under_flash(void)
  int ret, i;
 
  fp = fopen("/proc/self/cmdline", "r");
- if (!fp) {
+ if (!fp) 
+ {
  return;
  }
  ret = fread(buffer, 1, sizeof(buffer) - 1, fp);
@@ -40,7 +41,8 @@ void fshack_init_running_under_flash(void)
  }
  buffer[ret] = '\0';
  fprintf(stderr, "--- %s ---\n", buffer);
- if (strstr(buffer, "libflashplayer") != NULL) {
+ if (strstr(buffer, "libflashplayer") != NULL) 
+ {
  _running_under_flash = 1;
  }
 }
@@ -62,5 +64,7 @@ int XSelectInput(Display* display, Window window, long event_mask)
         event_mask &= ~PropertyChangeMask;
     }
 
-    return fn(display, window, event_mask);
+    int result = fn(display, window, event_mask);
+    dlclose(xlib_handle);
+    return result;
 }
